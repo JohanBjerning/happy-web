@@ -43,7 +43,7 @@ export default class BarChart {
         y: {
           data: { field: 'qMeasureInfo/0' },
           invert: true,
-          include: [0]
+          include: [0],          
         },
         c: {
           data: { field: 'qMeasureInfo/0' },
@@ -54,11 +54,25 @@ export default class BarChart {
       components: [{
         type: 'axis',
         dock: 'left',
-        scale: 'y'
+        scale: 'y',
+        settings: {
+          labels: {
+            fontSize: '16px',
+            fill: 'black',
+            fontFamily: 'quicksand-regular',
+          }
+        }
       },{
         type: 'axis',
         dock: 'bottom',
-        scale: 't'
+        scale: 't',
+        settings: {
+          labels: {
+            fontSize: '16px',
+            fontFamily: 'quicksand-regular',
+            fill: 'black'
+          }
+        }
       },{
         key: 'bars',
         type: 'box',
@@ -73,7 +87,7 @@ export default class BarChart {
         },
         settings: {
           major: { scale: 't' },
-          minor: { scale: 'y' },
+          minor: { scale: 'y'},
           box: {
             fill: { scale: 'c', ref: 'end' }
           }
