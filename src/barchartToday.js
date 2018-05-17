@@ -95,16 +95,6 @@ export default class BarChartToday {
       ],
     };
 
-    const data = layout.qHyperCube.qDataPages[0].qMatrix.map(item => ({
-      hello: item[0].qText,
-    }));
-
-    var data2 = layout.qHyperCube;  
-    console.log(data2);  
-
-    const hello = document.getElementsByClassName('hello-title')[0];
-    hello.innerHTML = data[0].hello;
-
     if (!this.pic) {
       this.pic = picasso.chart({
         element,
