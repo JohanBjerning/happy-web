@@ -1,0 +1,15 @@
+<div class="content" ng-click="$ctrl.clearAllSelections()">
+	<div class="container" ng-if="$ctrl.connected">
+		<div class="title">Total Happiness result</div>
+
+		<div id="chart-container" class="picasso-chart"></div>
+	</div>
+</div>
+
+<div class="error" ng-if="!$ctrl.connected && !$ctrl.connecting">
+	<div class="error-wrapper">
+		<span class="lui-icon--warning"></span>
+		<span class="error-title">Oops! Something went wrong.</span>
+		<span>{{$ctrl.error ? $ctrl.error : "Unexpected error"}}</span>
+	</div>
+</div>
