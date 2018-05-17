@@ -9,7 +9,7 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_HEAD(self):
         self._set_headers()
         info = 'Head from: {} '.format(self.client_address[0])
-        csvfile = urllib2.urlopen("http://" + self.client_address[0] + ":666/home/pi/happiness.csv")
+        csvfile = urllib2.urlopen("http://" + self.client_address[0] + ":8088")
         with open('data/happiness.csv','wb') as output:
             output.write(csvfile.read())
         print(info)
