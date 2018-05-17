@@ -132,6 +132,11 @@ app {
 	margin-top: 40px;
 	position: relative;
 }
+#chart-container2 {
+	height: 340px;
+	margin-top: 40px;
+	position: relative;
+}
 
 .picasso-chart circle {
 	cursor: pointer;

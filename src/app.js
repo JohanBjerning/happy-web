@@ -7,6 +7,7 @@ import enigmaMixin from 'halyard.js/dist/halyard-enigma-mixin';
 import qixSchema from 'enigma.js/schemas/3.2.json';
 import template from './app.html';
 import BarChart from './barchart';
+import BarChartToday from './barchartToday';
 
 const halyard = new Halyard();
 
@@ -28,9 +29,15 @@ angular.module('app', []).component('app', {
     };
 
     const barchart = new BarChart();
+    const barchartToday = new BarChartToday();
 
     const paintChart = (layout) => {
       barchart.paintBarChart(document.getElementById('chart-container'), layout, {
+        select,
+        clear: () => this.clearAllSelections(),
+        hasSelected: $scope.dataSelected,
+      });
+      barchartToday.paintBarChart(document.getElementById('chart-container2'), layout, {
         select,
         clear: () => this.clearAllSelections(),
         hasSelected: $scope.dataSelected,
@@ -58,7 +65,7 @@ angular.module('app', []).component('app', {
       const filePathHappiness = '/data/happiness.csv';
       const tableHappiness = new Halyard.Table(filePathHappiness, {
         name: 'Happiness',
-        fields: [{ src: 'timestamp', name: 'HappinessDate' }, { src: 'happiness', name: 'Happiness' }],
+        fields: [{ src: 'timestamp', name: 'HappinessDate', type:'Date', displayFormat: 'M/D/YYYY'}, { src: 'happiness', name: 'Happiness' }],
         delimiter: ',',
       });
       halyard.addTable(tableHappiness);
@@ -80,20 +87,30 @@ angular.module('app', []).component('app', {
                 qHyperCubeDef: {
                   qMeasures: [{
                     qDef: {
-                      qDef: 'Count(Happiness)',
+                      qDef: "Count([Happiness])",
                       qLabel: 'Nbr of Happiness',
                     },
                     qSortBy: {
                       qSortByExpression: 1,
                       qExpression:'Match([happiness], "happy", "content" and "sad")',
                     },
-                  }],
+                  },
+                  {
+                    qDef: {
+                      qDef: 'Count({1<[HappinessDate]={">$(=Date(Today()))"}>}Happiness)',
+                      qLabel: 'Nbr of Happiness Today',
+                    },
+                    qSortBy: {
+                      qSortByExpression: 1,
+                      qExpression:'Match(Happiness, "happy", "content" and "sad")',
+                    }, 
+                }] ,
                   qDimensions: [{
                     qDef: {
                       qFieldDefs: ['Happiness'],
                       qSortCriterias: [{
                         qSortByExpression: 1,
-                        qExpression:'Match([happiness], "happy", "content" and "sad")',
+                        qExpression:'Match(Happiness, "happy", "content" and "sad")',
                       }],
                     },
                   }],
@@ -108,7 +125,7 @@ angular.module('app', []).component('app', {
                 object = model;
 
                 const update = () => object.getLayout().then((layout) => {
-                  paintChart(layout);
+                  paintChart(layout);                  
                 });
 
                 object.on('changed', update);

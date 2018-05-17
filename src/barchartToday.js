@@ -6,7 +6,7 @@ import picassoQ from 'picasso-plugin-q';
 
 picasso.use(picassoQ);
 
-export default class BarChart {
+export default class BarChartToday {
   constructor() {
     this.axisPainted = false;
     this.pic = null;
@@ -41,12 +41,12 @@ export default class BarChart {
       ],
       scales: {
         y: {
-          data: { field: 'qMeasureInfo/0' },
+          data: { field: 'qMeasureInfo/1' },
           invert: true,
           include: [0],          
         },
         c: {
-          data: { field: 'qMeasureInfo/0' },
+          data: { field: 'qMeasureInfo/1' },
           type: 'color'
         },
         t: { data: { extract: { field: 'qDimensionInfo/0' } }, padding: 0.3 },
@@ -81,7 +81,7 @@ export default class BarChart {
             field: 'qDimensionInfo/0',
             props: {
               start: 0,
-              end: { field: 'qMeasureInfo/0' }
+              end: { field: 'qMeasureInfo/1' }
             }
           }
         },
@@ -89,11 +89,21 @@ export default class BarChart {
           major: { scale: 't' },
           minor: { scale: 'y'},
           box: {
-            fill: { scale: 'c', ref: 'end'}
+            fill: { scale: 'c', ref: 'end' }
           }
         }}
       ],
     };
+
+    const data = layout.qHyperCube.qDataPages[0].qMatrix.map(item => ({
+      hello: item[0].qText,
+    }));
+
+    var data2 = layout.qHyperCube;  
+    console.log(data2);  
+
+    const hello = document.getElementsByClassName('hello-title')[0];
+    hello.innerHTML = data[0].hello;
 
     if (!this.pic) {
       this.pic = picasso.chart({
