@@ -23,7 +23,7 @@ export default class BarChart {
     if (selectionAPI.hasSelected) {
       return; // keep selected chart state
     }
-    //console.log(layout);
+    
     const settings = {
       collections: [
         {
@@ -58,7 +58,7 @@ export default class BarChart {
         happiness: {
           type: 'categorical-color',
           data: ['sad', 'content', 'happy'],
-          range: ['darkred', 'white', 'green']
+          range: ['#ed5f55', '#fcce54', '#99d468']
         }
       },
       components: [{
