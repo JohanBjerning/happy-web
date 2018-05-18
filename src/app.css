@@ -50,6 +50,16 @@ app {
 	box-sizing: border-box;
 	flex: 0 0 auto;
 }
+.sturdy td:nth-child(1) {
+	width: 90px;
+}
+.sturdy td:nth-child(5) {
+	width: 4	0px;
+}
+
+.sturdy td:nth-child(2) , .sturdy td:nth-child(3), .sturdy td:nth-child(4) {
+  width: 310px;
+}
 
 .content {
 	flex: 1 1 auto;

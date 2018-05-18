@@ -46,10 +46,19 @@ export default class BarChartToday {
           include: [0],          
         },
         c: {
-          data: { field: 'qMeasureInfo/1' },
-          type: 'color'
+          data: {
+            extract: {
+              field: 'qDimensionInfo/0' 
+            } 
+          },
+          type: 'categorical-color',
         },
         t: { data: { extract: { field: 'qDimensionInfo/0' } }, padding: 0.3 },
+        happiness: {
+          type: 'categorical-color',
+          data: ['sad', 'content', 'happy'],
+          range: ['darkred', 'white', 'green']
+        }
       },
       components: [{
         type: 'axis',
@@ -68,7 +77,7 @@ export default class BarChartToday {
         scale: 't',
         settings: {
           labels: {
-            fontSize: '16px',
+            fontSize: '0px',
             fontFamily: 'quicksand-regular',
             fill: 'black'
           }
@@ -89,7 +98,9 @@ export default class BarChartToday {
           major: { scale: 't' },
           minor: { scale: 'y'},
           box: {
-            fill: { scale: 'c', ref: 'end' }
+            fill: function(d) {
+              return d.resources.scale('happiness')(d.datum.label);
+            }
           }
         }}
       ],
