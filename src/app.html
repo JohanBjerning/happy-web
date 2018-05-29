@@ -1,26 +1,26 @@
 <div class="content" ng-click="$ctrl.clearAllSelections()">
-	<div class="container" ng-if="$ctrl.connected">
-		<div class="title">Happiness result today</div>
-		<div id="chart-container2" class="picasso-chart"></div>
-		<br><br>
-		<div class="title">All time happiness result</div>
-		<div id="chart-container" class="picasso-chart"></div>
-		<table class="sturdy">
-			<tr>
-			  <td></td>
-			  <td><img src="resources/sadIcon.png" width="100px"></td>
-			  <td><img src="resources/contentIcon.png" width="100px"></td>
-			  <td><img src="resources/happyIcon.png" width="100px"></td>
-			  <td></td>
-			</tr>
-		  </table>
-	</div>
+    <div class="container" ng-if="$ctrl.connected">
+        <div class="title">Happiness result today</div>
+        <div id="chart-container2" class="picasso-chart"></div>
+        <br><br>
+        <div class="title">All time happiness result</div>
+        <div id="chart-container" class="picasso-chart"></div>
+        <table class="sturdy">
+            <tr>
+                <td></td>
+                <td><img src="resources/happyIcon.png" width="100px"></td>
+                <td><img src="resources/contentIcon.png" width="100px"></td>
+                <td><img src="resources/sadIcon.png" width="100px"></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
 </div>
 
 <div class="error" ng-if="!$ctrl.connected && !$ctrl.connecting">
-	<div class="error-wrapper">
-		<span class="lui-icon--warning"></span>
-		<span class="error-title">Oops! Something went wrong.</span>
-		<span>{{$ctrl.error ? $ctrl.error : "Unexpected error"}}</span>
-	</div>
+    <div class="error-wrapper">
+        <span class="lui-icon--warning"></span>
+        <span class="error-title">Oops! Something went wrong.</span>
+        <span>{{$ctrl.error ? $ctrl.error : "Unexpected error"}}</span>
+    </div>
 </div>
