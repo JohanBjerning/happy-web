@@ -1,0 +1,15 @@
+[Unit]
+Description=Start stop daemon for the happy-receiver receiving events from happy-pi and reloading the happy-web app
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/happy-web/
+ExecStart=/var/www/happy-web/start-server
+TimeoutStartSec=0
+User=rddev
+Group=rddev
+
+[Install]
+WantedBy=default.target
+

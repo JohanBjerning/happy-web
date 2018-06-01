@@ -1,0 +1,15 @@
+#!/bin/bash
+RASPBERRYIP=
+SCRIPT=`realpath $0`
+SCRIPTPATH=`dirname $SCRIPT`
+export PATH=$PATH:/home/rddev/.nvm/versions/node/v8.11.2/bin
+cd $SCRIPTPATH
+
+# Connect to Raspberry PI requesting events to be sent to this server
+curl -d "command=give-me-an-event" -X POST http://$RASPBERRYIP:8088 &
+
+# Start event receiver service
+python happy-receiver.py &
+
+# Start Web Server showing happiness charts
+npm run happy-web
