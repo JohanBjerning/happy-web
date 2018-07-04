@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "happy-web": "webpack-dev-server",
+    "build": "webpack",
     "lint": "eslint .",
     "lint-fix": "eslint --fix ."
   },
