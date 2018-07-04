@@ -1,15 +1,59 @@
 /* eslint-env browser */
-
-import Halyard from 'halyard.js';
 import angular from 'angular';
 import enigma from 'enigma.js';
-import enigmaMixin from 'halyard.js/dist/halyard-enigma-mixin';
 import qixSchema from 'enigma.js/schemas/3.2.json';
 import template from './app.html';
 import BarChart from './barchart';
 import BarChartToday from './barchartToday';
+import HappinessApp from './happinessapp';
 
-const halyard = new Halyard();
+const engineUrl = "[URL:PORT]";
+const appName = "[APP_NAME]";
+
+const barchartProperties = {
+  qInfo: {
+    qType: 'visualization',
+    qId: '',
+  },
+  type: 'my-picasso-barchart',
+  labels: true,
+  qHyperCubeDef: {
+    qMeasures: [{
+      qDef: {
+        qDef: "Count([Happiness])",
+        qLabel: 'Nbr of Happiness',
+      },
+      qSortBy: {
+        qSortByLoadOrder: 1,
+        qExpression: {}
+      },
+    },
+    {
+      qDef: {
+        qDef: 'Count({1<[HappinessDate]={">$(=Date(Today()))"}>}Happiness)',
+        qLabel: 'Nbr of Happiness Today',
+      },
+    }],
+    qDimensions: [{
+      qDef: {
+        qFieldDefs: ['Happiness'],
+      },
+      qSortCriterias: [
+        {
+          qSortByAscii: 0,
+          qSortByLoadOrder: 0,
+          qSortByExpression: 1,
+          qExpression: { "qv": "Match([Happiness], 'sad','content' and 'happy')" }
+        }
+      ],
+    }],
+    qInitialDataFetch: [{
+      qTop: 0, qHeight: 1000, qLeft: 0, qWidth: 3,
+    }],
+    qSuppressZero: false,
+    qSuppressMissing: true,
+  },
+};
 
 angular.module('app', []).component('app', {
   bindings: {},
@@ -17,6 +61,7 @@ angular.module('app', []).component('app', {
     $scope.dataSelected = false;
     $scope.showFooter = false;
 
+    this.admin = true;
     this.connected = false;
     this.painted = false;
     this.connecting = true;
@@ -25,11 +70,13 @@ angular.module('app', []).component('app', {
     let app = null;
 
     const select = (value) => {
-      
+
     };
 
     const barchart = new BarChart();
     const barchartToday = new BarChartToday();
+
+    const happinessapp = new HappinessApp();
 
     const paintChart = (layout) => {
       barchart.paintBarChart(document.getElementById('chart-container'), layout, {
@@ -54,103 +101,48 @@ angular.module('app', []).component('app', {
     });
 
     this.$onInit = () => {
+
       const config = {
         Promise: $q,
         schema: qixSchema,
-        mixins: enigmaMixin,
-        url: `ws://${window.location.hostname}:19076/app/${this.generateGUID()}`,
+        url: `ws://${engineUrl}/app/${this.generateGUID()}`,
       };
 
-      // Add local data
-      const filePathHappiness = '/data/happiness.csv';
-      const tableHappiness = new Halyard.Table(filePathHappiness, {
-        name: 'Happiness',
-        fields: [{ src: 'timestamp', name: 'HappinessDate', type:'Date', displayFormat: 'M/D/YYYY'}, { src: 'happiness', name: 'Happiness' }],
-        delimiter: ',',
-      });
-      halyard.addTable(tableHappiness);
+      const appId = appName;
 
-      enigma.create(config).open().then((qix) => {
+      enigma.create(config).open().then((global) => {
         this.connected = true;
         this.connecting = false;
-        qix.createSessionAppUsingHalyard(halyard).then((result) => {
+        // global === QIX global interface
+        global.openDoc(appId)
+        .then((result) => {
           app = result;
-          result.getAppLayout()
-            .then(() => {
-              const barchartProperties = {
-                qInfo: {
-                  qType: 'visualization',
-                  qId: '',
-                },
-                type: 'my-picasso-barchart',
-                labels: true,
-                qHyperCubeDef: {
-                  qMeasures: [{
-                    qDef: {
-                      qDef: "Count([Happiness])",
-                      qLabel: 'Nbr of Happiness',
-                    },
-                    qSortBy: {
-                      qSortByExpression: 1,
-                      qExpression:'Match([happiness], "happy", "content" and "sad")',
-                    },
-                  },
-                  {
-                    qDef: {
-                      qDef: 'Count({1<[HappinessDate]={">$(=Date(Today()))"}>}Happiness)',
-                      qLabel: 'Nbr of Happiness Today',
-                    },
-                    qSortBy: {
-                      qSortByExpression: 1,
-                      qExpression:'Match(Happiness, "happy", "content" and "sad")',
-                    }, 
-                }] ,
-                  qDimensions: [{
-                    qDef: {
-                      qFieldDefs: ['Happiness'],
-                      qSortCriterias: [{
-                        qSortByExpression: 1,
-                        qExpression:'Match(Happiness, "happy", "content" and "sad")',
-                      }],
-                    },
-                  }],
-                  qInitialDataFetch: [{
-                    qTop: 0, qHeight: 50, qLeft: 0, qWidth: 3,
-                  }],
-                  qSuppressZero: false,
-                  qSuppressMissing: true,
-                },
-              };
-              result.createSessionObject(barchartProperties).then((model) => {
-                object = model;
+          app.getAppLayout()
+          .then(() => app.createSessionObject(barchartProperties))
+          .then((model) => {
+            object = model;
 
-                const update = () => object.getLayout().then((layout) => {
-                  paintChart(layout);                  
-                });
-
-                object.on('changed', update);
-                update();
-              });
+            const update = () => object.getLayout().then((layout) => {
+              paintChart(layout);                  
             });
-        }, () => {
-          this.error = 'Could not create session app';
-          this.connected = false;
-          this.connecting = false;
-        });
-      }, () => {
-        this.error = 'Could not connect to QIX Engine';
-        this.connecting = false;
-      });
 
-    this.clearAllSelections = () => {
-      if ($scope.dataSelected) {
-        $scope.dataSelected = false;
-        app.clearAll();
-      }
-      $scope.showFooter = false;
-    };
-  }}],
+            object.on('changed', update);
+            update();
+          });       
+        });        
+      });           
+
+      this.createNewApp = () => {
+        happinessapp.createNewApp(appId, config);
+      };
+
+      this.reloadData = () => {
+        happinessapp.doReload(appId, config);
+      };
+    }
+  }],
   template,
 });
+
 
 angular.bootstrap(document, ['app']);

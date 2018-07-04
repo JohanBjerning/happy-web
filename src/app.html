@@ -16,6 +16,10 @@
         </table>
     </div>
 </div>
+<div ng-if="$ctrl.admin">
+    <button type="button" ng-click="$ctrl.reloadData()">Reload App</button>
+    <button type="button" ng-click="$ctrl.createNewApp()">Create App</button>
+</div>
 
 <div class="error" ng-if="!$ctrl.connected && !$ctrl.connecting">
     <div class="error-wrapper">
