@@ -121,10 +121,12 @@ angular.module('app', []).component('app', {
             object = model;
 
             const update = () => object.getLayout().then((layout) => {
-              paintChart(layout);                  
+              paintChart(layout);   
+              //happinessapp.doReload(appId, config);             
             });
 
             object.on('changed', update);
+            setInterval(update, 10000);
             update();
           });       
         });        
@@ -136,6 +138,10 @@ angular.module('app', []).component('app', {
 
       this.reloadData = () => {
         happinessapp.doReload(appId, config);
+      };
+      
+      this.reloadEveryXSewc = () => {
+        setInterval(this.reloadData, 10000);          
       };
     }
   }],

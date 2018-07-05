@@ -28,7 +28,6 @@ export default class HappinessApp {
         let app = null;
         let global = null;
         let session = null;
-        let connectionId = null;
 
         session = enigma.create(config);
         /* Open Connection to Engine */
@@ -41,16 +40,22 @@ export default class HappinessApp {
         .then((result) => {
             app = result;
         })
+        .then(() => global.abortAll())
+
         /* Create Connection */
-        .then(() => app.createConnection(mysqlConnectionSettings))
-        
-        /* Save Connection ID */
-        .then((id) => {
-            connectionId = id;
+        .then(() => app.getConnections())
+        .then((connections) => {
+            if(connections) {
+                for (var j=0; j<connections.length; j++) {
+                    if (connections[j].qName.match("jdbc")) 
+                    return connections[j].qId;
+                }                
+            }
+            return app.createConnection(mysqlConnectionSettings);
         })
 
         /* Configure the Reload */
-        .then(() => global.configureReload(true, true, false))
+        .then(() => global.configureReload(true, false, false))
 
         /* Set the Script */
         .then(() => app.setScript(script))
@@ -70,9 +75,6 @@ export default class HappinessApp {
         //     .reduce((row1, row2) => `${row1}\n${row2}`);
         //     console.log(tableDataAsString);
         // })
-
-        /* Remove the connection from the app */
-        .then(() => app.deleteConnection(connectionId))
 
         /* Save the app */
         .then(() => app.doSave())
