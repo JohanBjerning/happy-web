@@ -42,6 +42,7 @@ module.exports = {
       { from: 'src/app.html' },
       { from: 'src/app.css' },
       { from: 'data/happiness.csv' },
+      { from: 'src/config.js'},
       { from: 'src/resources/', to: 'resources/' },
     ]),
   ],
