@@ -2,14 +2,15 @@
 /* eslint import/extensions:0 */
 
 import enigma from 'enigma.js';
+import {configuration} from './config'
 import qixSchema from 'enigma.js/schemas/3.2.json';
 
 const mysqlConnectionSettings = {
     qType: 'jdbc', // the name we defined as a parameter to engine in our docker-compose.yml
     qName: 'jdbc',
-    qConnectionString: 'CUSTOM CONNECT TO "[connection_string_to_database]"', // the connection string includes both the provide to use and parameters to it.
-    qUserName: '[username]',
-    qPassword: '[password]',
+    qConnectionString: configuration.MySQLConnectionString, // the connection string includes both the provide to use and parameters to it.
+    qUserName: configuration.MySQLUser,
+    qPassword: configuration.MySQLPass,
   };
 
   const script = `

@@ -6,9 +6,8 @@ import template from './app.html';
 import BarChart from './barchart';
 import BarChartToday from './barchartToday';
 import HappinessApp from './happinessapp';
+import {configuration} from './config';
 
-const engineUrl = "[URL:PORT]";
-const appName = "[APP_NAME]";
 
 const barchartProperties = {
   qInfo: {
@@ -101,14 +100,13 @@ angular.module('app', []).component('app', {
     });
 
     this.$onInit = () => {
-
       const config = {
         Promise: $q,
         schema: qixSchema,
-        url: `ws://${engineUrl}/app/${this.generateGUID()}`,
+        url: `ws://${configuration.engineUrl}/app/${this.generateGUID()}`,
       };
 
-      const appId = appName;
+      const appId = configuration.appName;
 
       enigma.create(config).open().then((global) => {
         this.connected = true;
