@@ -58,18 +58,18 @@ export default class HappinessApp {
         /* Do the Reload*/
         .then(() => app.doReload())
 
-        /* Get the table data and log it */
-        .then(() => app.getTableData(-1, 10000, true, 'happy'))
-        .then((tableData) => {
-            const tableDataAsString = tableData
-              .map(row =>
-                row.qValue
-                  .map(value => value.qText)
-                  .reduce((left, right) => `${left}\t${right}`),
-            )
-            .reduce((row1, row2) => `${row1}\n${row2}`);
-            console.log(tableDataAsString);
-        })
+        // /* Get the table data and log it */
+        // .then(() => app.getTableData(-1, 10000, true, 'happy'))
+        // .then((tableData) => {
+        //     const tableDataAsString = tableData
+        //       .map(row =>
+        //         row.qValue
+        //           .map(value => value.qText)
+        //           .reduce((left, right) => `${left}\t${right}`),
+        //     )
+        //     .reduce((row1, row2) => `${row1}\n${row2}`);
+        //     console.log(tableDataAsString);
+        // })
 
         /* Remove the connection from the app */
         .then(() => app.deleteConnection(connectionId))
