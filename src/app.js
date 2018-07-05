@@ -126,7 +126,6 @@ angular.module('app', []).component('app', {
             });
 
             object.on('changed', update);
-            setInterval(update, 10000);
             update();
           });       
         });        
