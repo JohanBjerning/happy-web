@@ -5,6 +5,7 @@ import qixSchema from 'enigma.js/schemas/3.2.json';
 import template from './app.html';
 import BarChart from './barchart';
 import BarChartToday from './barchartToday';
+import DailyDistribution from './dailydistribution';
 import HappinessApp from './happinessapp';
 import {configuration} from './config';
 
@@ -54,6 +55,56 @@ const barchartProperties = {
   },
 };
 
+const dayDistributionChartProperties = {
+  qInfo: {
+    qType: 'visualization',
+    qId: '',
+  },
+  type: 'my-picasso-multilinechart',
+  labels: true,
+  qHyperCubeDef: {
+    qMeasures: [{
+      qDef: {
+        qDef: "Count([Happiness])",
+        qLabel: 'Nbr of Happiness',
+      },
+      qSortBy: {
+        qSortByLoadOrder: 1,
+        qExpression: {}
+      },
+    },
+    {
+      qDef: {
+        qDef: 'Count({1<[HappinessDate]={">$(=Date(Today()))"}>}Happiness)',
+        qLabel: 'Nbr of Happiness Today',
+      },
+    }],
+    qDimensions: [{
+      qDef: {
+        qFieldDefs: ['Hour'],
+      },
+    },
+    {
+      qDef: {
+        qFieldDefs: ['Happiness'],
+      },
+      qSortCriterias: [
+        {
+          qSortByAscii: 0,
+          qSortByLoadOrder: 0,
+          qSortByExpression: 1,
+          qExpression: { "qv": "Match([Happiness], 'sad','content' and 'happy')" }
+        }
+      ],
+    }],
+    qInitialDataFetch: [{
+      qTop: 0, qHeight: 1000, qLeft: 0, qWidth: 3,
+    }],
+    qSuppressZero: false,
+    qSuppressMissing: true,
+  },
+};
+
 angular.module('app', []).component('app', {
   bindings: {},
   controller: ['$scope', '$q', '$http', function Controller($scope, $q, $http) {
@@ -74,6 +125,7 @@ angular.module('app', []).component('app', {
 
     const barchart = new BarChart();
     const barchartToday = new BarChartToday();
+    const dailyDistribution = new DailyDistribution();
 
     const happinessapp = new HappinessApp();
 
@@ -90,6 +142,14 @@ angular.module('app', []).component('app', {
       });
       this.painted = true;
     };
+
+    const paintDaily = (layout) => {
+      dailyDistribution.paintChart(document.getElementById('chart-container2'), layout, {
+        select,
+        clear: () => this.clearAllSelections(),
+        hasSelected: $scope.dataSelected,
+      });
+    }
 
     this.generateGUID = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
       // eslint-disable-next-line no-bitwise
@@ -127,7 +187,18 @@ angular.module('app', []).component('app', {
 
             object.on('changed', update);
             update();
-          });       
+          })
+          .then(() => app.createSessionObject(dayDistributionChartProperties))
+          .then((model) => {
+            object = model;
+
+            const update = () => object.getLayout().then((layout) => {
+              paintDaily(layout);   
+            });
+
+            object.on('changed', update);
+            update();
+          })       
         });        
       });           
 
