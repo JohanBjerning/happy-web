@@ -14,10 +14,9 @@ export default class DailyDistribution {
 
   paintChart(element, layout, selectionAPI) {
     if (!(layout.qHyperCube &&
-      layout.qHyperCube.qDataPages &&
-      layout.qHyperCube.qDataPages[0] &&
-      layout.qHyperCube.qDataPages[0].qMatrix)
+      layout.qHyperCube.qStackedDataPages)
     ) {
+      console.log('Broken hypercube')
       return;
     }
     if (selectionAPI.hasSelected) {
@@ -27,41 +26,23 @@ export default class DailyDistribution {
     const settings = {
       collections: [
         {
-          key: 'coll',
+          key: 'collection',
           data: {
-            extract: {
-              field: 'qDimensionInfo/0',
-              value: v => v.qNum,
-              props: {
-                hour: { value: v => v.qText },
-                happinessCount: { field: 'qMeasureInfo/0' },
-              },
-            },
-          },
+            extract: 
+            {
+                field: 'qDimensionInfo/0',
+                value: v => v.qNum,
+                props: {
+                  hour: { value: v => v.qNum },
+                  happinessCount: { field: 'qMeasureInfo/0' }
+              }
+            }
+          }
         },
       ],
       scales: {
         x: { data: { field: 'qDimensionInfo/0' }, expand: 0.05, type: 'linear' },
         y: { data: { field: 'qMeasureInfo/0' }, expand: 0.1, invert: true },
-        // y: {
-        //   data: { field: 'qMeasureInfo/0' },
-        //   invert: true,
-        //   include: [0],          
-        // },
-        // c: {
-        //   data: {
-        //     extract: {
-        //       field: 'qDimensionInfo/0' 
-        //     } 
-        //   },
-        //   type: 'categorical-color',
-        // },
-        // t: { data: { extract: { field: 'qDimensionInfo/0' } }, padding: 0.3 },
-        // happiness: {
-        //   type: 'categorical-color',
-        //   data: ['sad', 'content', 'happy'],
-        //   range: ['#ed5f55', '#fcce54', '#99d468']
-        // }
       },
       components: [{
         type: 'axis',
@@ -69,7 +50,7 @@ export default class DailyDistribution {
         scale: 'y',
         settings: {
           labels: {
-            fontSize: '16px',
+            fontSize: '10px',
             fill: 'black',
             fontFamily: 'quicksand-regular',
           }
@@ -88,7 +69,7 @@ export default class DailyDistribution {
       },{
         key: 'lines',
         type: 'line',
-        data: { collection: 'coll' },
+        data: { collection: 'collection' },
         settings: {
           coordinates: {
             major: { scale: 'x' },

@@ -63,43 +63,28 @@ const dayDistributionChartProperties = {
   type: 'my-picasso-multilinechart',
   labels: true,
   qHyperCubeDef: {
+    qDimensions: [
+      {
+        qDef: {
+          qFieldDefs: ['Hour'],
+          qSortCriterias: [
+            {
+              qSortByNumeric: 1 // Sort ascending
+            }
+          ]
+        }
+      }
+    ],
     qMeasures: [{
       qDef: {
-        qDef: "Count([Happiness])",
-        qLabel: 'Nbr of Happiness',
-      },
-      qSortBy: {
-        qSortByLoadOrder: 1,
-        qExpression: {}
-      },
-    },
-    {
-      qDef: {
-        qDef: 'Count({1<[HappinessDate]={">$(=Date(Today()))"}>}Happiness)',
-        qLabel: 'Nbr of Happiness Today',
-      },
-    }],
-    qDimensions: [{
-      qDef: {
-        qFieldDefs: ['Hour'],
-      },
-    },
-    {
-      qDef: {
-        qFieldDefs: ['Happiness'],
-      },
-      qSortCriterias: [
-        {
-          qSortByAscii: 0,
-          qSortByLoadOrder: 0,
-          qSortByExpression: 1,
-          qExpression: { "qv": "Match([Happiness], 'sad','content' and 'happy')" }
-        }
-      ],
+        qDef: 'Count([Happiness])',
+        qLabel: 'Respondents',
+      }
     }],
     qInitialDataFetch: [{
       qTop: 0, qHeight: 1000, qLeft: 0, qWidth: 3,
     }],
+    //qMode: 'K', // Stacked Pivot
     qSuppressZero: false,
     qSuppressMissing: true,
   },
@@ -135,11 +120,11 @@ angular.module('app', []).component('app', {
         clear: () => this.clearAllSelections(),
         hasSelected: $scope.dataSelected,
       });
-      barchartToday.paintBarChart(document.getElementById('chart-container2'), layout, {
-        select,
-        clear: () => this.clearAllSelections(),
-        hasSelected: $scope.dataSelected,
-      });
+      // barchartToday.paintBarChart(document.getElementById('chart-container2'), layout, {
+      //   select,
+      //   clear: () => this.clearAllSelections(),
+      //   hasSelected: $scope.dataSelected,
+      // });
       this.painted = true;
     };
 
@@ -193,6 +178,7 @@ angular.module('app', []).component('app', {
             object = model;
 
             const update = () => object.getLayout().then((layout) => {
+              console.log(layout);
               paintDaily(layout);   
             });
 
