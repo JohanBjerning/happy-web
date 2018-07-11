@@ -41,7 +41,7 @@ export default class DailyDistribution {
         },
       ],
       scales: {
-        x: { data: { field: 'qDimensionInfo/0' }, expand: 0.05, type: 'linear' },
+        x: { data: { field: 'qDimensionInfo/0' }, type: 'linear', ticks: {distance:60} },
         y: { data: { field: 'qMeasureInfo/0' }, expand: 0.1, invert: true },
       },
       components: [{

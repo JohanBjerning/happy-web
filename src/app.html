@@ -1,26 +1,36 @@
 <div class="content" ng-click="$ctrl.clearAllSelections()">
-    <div class="container" ng-if="$ctrl.connected">
-        <div class="title">Happiness result today</div>
-        <div id="chart-container2" class="picasso-chart"></div>
-        <br><br>
-        <div class="title">All time happiness result</div>
-        <div id="chart-container" class="picasso-chart"></div>
-        <table class="sturdy">
-            <tr>
-                <td></td>
-                <td><img src="resources/happyIcon.png" width="100px"></td>
-                <td><img src="resources/contentIcon.png" width="100px"></td>
-                <td><img src="resources/sadIcon.png" width="100px"></td>
-                <td></td>
-            </tr>
-        </table>
+    <div class="grid-container" ng-if="$ctrl.connected">
+        <div class="grid-item">
+            <div class="title">Today's happiness</div>
+            <div id="chart-container2" class="picasso-chart"></div>
+        </div>
+        <div class="grid-item">
+            <div class="title">Interactions during the day</div>
+            <div id="daily-container" class="picasso-chart"></div>
+        </div>
+        <div class="grid-item">
+            <div class="title">All time happiness result</div>
+            <div id="chart-container" class="picasso-chart"></div>
+        </div>
+        <div class="grid-item"></div>
+        <div class="grid-item" id="emojis">
+            <table width="100%">
+                <tr>
+                    <td><img src="resources/happyIcon.png" width="100px"></td>
+                    <td><img src="resources/contentIcon.png" width="100px"></td>
+                    <td><img src="resources/sadIcon.png" width="100px"></td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
-<div ng-if="$ctrl.admin">
-    <button type="button" ng-click="$ctrl.reloadData()">Reload App</button>
-    <button type="button" ng-click="$ctrl.createNewApp()">Create App</button>
-    <button type="button" ng-click="$ctrl.reloadEveryXSewc()">Start reloads</button>
-</div>
+
+<div class="menu" ng-if="$ctrl.admin">
+        <button type="button" ng-click="$ctrl.reloadData()">Reload App</button><br>
+        <button type="button" ng-click="$ctrl.createNewApp()">Create App</button><br>
+        <button type="button" ng-click="$ctrl.reloadEveryXSewc()">Start reloads</button><br>
+    </div>
+
 
 <div class="error" ng-if="!$ctrl.connected && !$ctrl.connecting">
     <div class="error-wrapper">

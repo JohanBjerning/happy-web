@@ -101,7 +101,8 @@ angular.module('app', []).component('app', {
     this.painted = false;
     this.connecting = true;
 
-    let object = null;
+    let barChartModel = null;
+    let lineChartModel = null;
     let app = null;
 
     const select = (value) => {
@@ -120,20 +121,20 @@ angular.module('app', []).component('app', {
         clear: () => this.clearAllSelections(),
         hasSelected: $scope.dataSelected,
       });
-      // barchartToday.paintBarChart(document.getElementById('chart-container2'), layout, {
-      //   select,
-      //   clear: () => this.clearAllSelections(),
-      //   hasSelected: $scope.dataSelected,
-      // });
-      this.painted = true;
-    };
-
-    const paintDaily = (layout) => {
-      dailyDistribution.paintChart(document.getElementById('chart-container2'), layout, {
+      barchartToday.paintBarChart(document.getElementById('chart-container2'), layout, {
         select,
         clear: () => this.clearAllSelections(),
         hasSelected: $scope.dataSelected,
       });
+    };
+
+    const paintDaily = (layout) => {
+      dailyDistribution.paintChart(document.getElementById('daily-container'), layout, {
+        select,
+        clear: () => this.clearAllSelections(),
+        hasSelected: $scope.dataSelected,
+      });
+      this.painted = true;
     }
 
     this.generateGUID = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -162,29 +163,28 @@ angular.module('app', []).component('app', {
           app = result;
           app.getAppLayout()
           .then(() => app.createSessionObject(barchartProperties))
-          .then((model) => {
-            object = model;
+            .then((model) => {
+              barChartModel = model;
 
-            const update = () => object.getLayout().then((layout) => {
-              paintChart(layout);   
-              //happinessapp.doReload(appId, config);             
-            });
+              const update = () => barChartModel.getLayout().then((layout) => {
+                paintChart(layout);   
+              });
 
-            object.on('changed', update);
-            update();
-          })
+              barChartModel.on('changed', update);
+              update();
+            })
           .then(() => app.createSessionObject(dayDistributionChartProperties))
-          .then((model) => {
-            object = model;
+            .then((model) => {
+              lineChartModel = model;
 
-            const update = () => object.getLayout().then((layout) => {
-              console.log(layout);
-              paintDaily(layout);   
-            });
+              const update = () => lineChartModel.getLayout().then((layout) => {
+                console.log(layout);
+                paintDaily(layout);   
+              });
 
-            object.on('changed', update);
-            update();
-          })       
+              lineChartModel.on('changed', update);
+              update();
+            })       
         });        
       });           
 
