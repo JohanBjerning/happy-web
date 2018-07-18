@@ -30,19 +30,24 @@ export default class DailyDistribution {
           data: {
             extract: 
             {
-                field: 'qDimensionInfo/0',
+                field: 'Hour',
                 value: v => v.qNum,
                 props: {
-                  hour: { value: v => v.qNum },
-                  happinessCount: { field: 'qMeasureInfo/0' }
+                  happiness: { field: 'Happiness'},
+                  happinessCount: { field: 'Respondents' }
               }
             }
           }
         },
       ],
       scales: {
-        x: { data: { field: 'qDimensionInfo/0' }, type: 'linear', ticks: {distance:60} },
-        y: { data: { field: 'qMeasureInfo/0' }, expand: 0.1, invert: true },
+        x: { data: { field: 'Hour' }, type: 'linear', ticks: {distance:60} },
+        y: { data: { field: 'Respondents' }, expand: 0.1, invert: true },
+        happinessScale: {
+          type: 'categorical-color',
+          data: ['sad', 'content', 'happy'],
+          range: ['#ed5f55', '#fcce54', '#99d468']
+        }
       },
       components: [{
         type: 'axis',
@@ -74,13 +79,17 @@ export default class DailyDistribution {
           coordinates: {
             major: { scale: 'x' },
             minor: { scale: 'y', ref: 'happinessCount' },
+            layerId: { ref: 'happiness' }
           },
           layers: {
-            line: {},
+            line: {
+              // Use the happiness as input for how to colour the lines
+              stroke: function(d){return d.resources.scale('happinessScale')(d.datum.happiness.label); }              
+            },
           },
-        },    
+        }
       }
-      ]
+      ]    
     };
 
     if (!this.pic) {

@@ -66,7 +66,19 @@ const dayDistributionChartProperties = {
     qDimensions: [
       {
         qDef: {
+          qGrouping: 'N',
           qFieldDefs: ['Hour'],
+          qSortCriterias: [
+            {
+              qSortByNumeric: 1 // Sort ascending
+            }
+          ]
+        }
+      }
+      ,{
+        qDef: {
+          qGrouping: 'N',
+          qFieldDefs: ['Happiness'],
           qSortCriterias: [
             {
               qSortByNumeric: 1 // Sort ascending
@@ -79,12 +91,14 @@ const dayDistributionChartProperties = {
       qDef: {
         qDef: 'Count([Happiness])',
         qLabel: 'Respondents',
+        qGrouping: 'N',
       }
     }],
     qInitialDataFetch: [{
       qTop: 0, qHeight: 1000, qLeft: 0, qWidth: 3,
     }],
-    //qMode: 'K', // Stacked Pivot
+    qMode: 'S', 
+    qInterColumnSortOrder: [0,2,1],
     qSuppressZero: false,
     qSuppressMissing: true,
   },
