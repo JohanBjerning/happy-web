@@ -30,7 +30,7 @@ const barchartProperties = {
     },
     {
       qDef: {
-        qDef: 'Count({1<[HappinessDate]={">$(=Date(Today()))"}>}Happiness)',
+        qDef: 'Count({1<[HappinessDate]={">$(=Date(Today(1)))"}>}Happiness)',
         qLabel: 'Nbr of Happiness Today',
       },
     }],
