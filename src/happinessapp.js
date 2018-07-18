@@ -18,6 +18,7 @@ const mysqlConnectionSettings = {
     happy:
     LOAD
     Date(timestamp) as HappinessDate,
+    Hour(TimeStamp(Round(timestamp, 1/24))) As Hour,
     happiness as Happiness;
     sql SELECT * FROM happy;
     `;

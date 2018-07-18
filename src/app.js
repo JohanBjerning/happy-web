@@ -5,6 +5,7 @@ import qixSchema from 'enigma.js/schemas/3.2.json';
 import template from './app.html';
 import BarChart from './barchart';
 import BarChartToday from './barchartToday';
+import DailyDistribution from './dailydistribution';
 import HappinessApp from './happinessapp';
 import {configuration} from './config';
 
@@ -29,7 +30,7 @@ const barchartProperties = {
     },
     {
       qDef: {
-        qDef: 'Count({1<[HappinessDate]={">$(=Date(Today()))"}>}Happiness)',
+        qDef: 'Count({1<[HappinessDate]={">$(=Date(Today(1)))"}>}Happiness)',
         qLabel: 'Nbr of Happiness Today',
       },
     }],
@@ -54,6 +55,55 @@ const barchartProperties = {
   },
 };
 
+const dayDistributionChartProperties = {
+  qInfo: {
+    qType: 'visualization',
+    qId: '',
+  },
+  type: 'my-picasso-multilinechart',
+  labels: true,
+  qHyperCubeDef: {
+    qDimensions: [
+      {
+        qDef: {
+          qGrouping: 'N',
+          qFieldDefs: ['Hour'],
+          qSortCriterias: [
+            {
+              qSortByNumeric: 1 // Sort ascending
+            }
+          ]
+        }
+      }
+      ,{
+        qDef: {
+          qGrouping: 'N',
+          qFieldDefs: ['Happiness'],
+          qSortCriterias: [
+            {
+              qSortByNumeric: 1 // Sort ascending
+            }
+          ]
+        }
+      }
+    ],
+    qMeasures: [{
+      qDef: {
+        qDef: 'Count([Happiness])',
+        qLabel: 'Respondents',
+        qGrouping: 'N',
+      }
+    }],
+    qInitialDataFetch: [{
+      qTop: 0, qHeight: 1000, qLeft: 0, qWidth: 3,
+    }],
+    qMode: 'S', 
+    qInterColumnSortOrder: [0,2,1],
+    qSuppressZero: false,
+    qSuppressMissing: true,
+  },
+};
+
 angular.module('app', []).component('app', {
   bindings: {},
   controller: ['$scope', '$q', '$http', function Controller($scope, $q, $http) {
@@ -65,7 +115,8 @@ angular.module('app', []).component('app', {
     this.painted = false;
     this.connecting = true;
 
-    let object = null;
+    let barChartModel = null;
+    let lineChartModel = null;
     let app = null;
 
     const select = (value) => {
@@ -74,6 +125,7 @@ angular.module('app', []).component('app', {
 
     const barchart = new BarChart();
     const barchartToday = new BarChartToday();
+    const dailyDistribution = new DailyDistribution();
 
     const happinessapp = new HappinessApp();
 
@@ -88,8 +140,16 @@ angular.module('app', []).component('app', {
         clear: () => this.clearAllSelections(),
         hasSelected: $scope.dataSelected,
       });
-      this.painted = true;
     };
+
+    const paintDaily = (layout) => {
+      dailyDistribution.paintChart(document.getElementById('daily-container'), layout, {
+        select,
+        clear: () => this.clearAllSelections(),
+        hasSelected: $scope.dataSelected,
+      });
+      this.painted = true;
+    }
 
     this.generateGUID = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
       // eslint-disable-next-line no-bitwise
@@ -117,17 +177,28 @@ angular.module('app', []).component('app', {
           app = result;
           app.getAppLayout()
           .then(() => app.createSessionObject(barchartProperties))
-          .then((model) => {
-            object = model;
+            .then((model) => {
+              barChartModel = model;
 
-            const update = () => object.getLayout().then((layout) => {
-              paintChart(layout);   
-              //happinessapp.doReload(appId, config);             
-            });
+              const update = () => barChartModel.getLayout().then((layout) => {
+                paintChart(layout);   
+              });
 
-            object.on('changed', update);
-            update();
-          });       
+              barChartModel.on('changed', update);
+              update();
+            })
+          .then(() => app.createSessionObject(dayDistributionChartProperties))
+            .then((model) => {
+              lineChartModel = model;
+
+              const update = () => lineChartModel.getLayout().then((layout) => {
+                console.log(layout);
+                paintDaily(layout);   
+              });
+
+              lineChartModel.on('changed', update);
+              update();
+            })       
         });        
       });           
 
