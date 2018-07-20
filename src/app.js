@@ -66,7 +66,6 @@ const dayDistributionChartProperties = {
     qDimensions: [
       {
         qDef: {
-          qGrouping: 'N',
           qFieldDefs: ['Hour'],
           qSortCriterias: [
             {
@@ -77,7 +76,6 @@ const dayDistributionChartProperties = {
       }
       ,{
         qDef: {
-          qGrouping: 'N',
           qFieldDefs: ['Happiness'],
           qSortCriterias: [
             {
@@ -87,13 +85,62 @@ const dayDistributionChartProperties = {
         }
       }
     ],
-    qMeasures: [{
-      qDef: {
-        qDef: 'Count([Happiness])',
-        qLabel: 'Respondents',
-        qGrouping: 'N',
-      }
+    qMeasures: [
+      {
+        qDef: {
+          qDef: 'Count([Happiness])',
+          qLabel: 'Respondents',
+        }
+      },
+    ],
+    qInitialDataFetch: [{
+      qTop: 0, qHeight: 1000, qLeft: 0, qWidth: 3,
     }],
+    qMode: 'S', 
+    qInterColumnSortOrder: [0,2,1],
+    qSuppressZero: false,
+    qSuppressMissing: true,
+  },
+};
+
+const dayDistributionTodayChartProperties = {
+  qInfo: {
+    qType: 'visualization',
+    qId: '',
+  },
+  type: 'my-picasso-multilinechart',
+  labels: true,
+  qHyperCubeDef: {
+    qDimensions: [
+      {
+        qDef: {
+          qFieldDefs: ['Hour'],
+          qSortCriterias: [
+            {
+              qSortByNumeric: 1 // Sort ascending
+            }
+          ]
+        }
+      }
+      ,{
+        qDef: {
+          qFieldDefs: ['Happiness'],
+          qSortCriterias: [
+            {
+              qSortByNumeric: 1 // Sort ascending
+            }
+          ]
+        }
+      }
+    ],
+    qMeasures: [
+      {
+        qDef: {
+          qDef: 'Count({1<[HappinessDate]={">$(=Date(Today(1)))"}>}[Happiness])',
+          qLabel: 'Respondents',
+        }
+      }
+    ],
     qInitialDataFetch: [{
       qTop: 0, qHeight: 1000, qLeft: 0, qWidth: 3,
     }],
@@ -117,6 +164,7 @@ angular.module('app', []).component('app', {
 
     let barChartModel = null;
     let lineChartModel = null;
+    let lineChartModel2 = null;
     let app = null;
 
     const select = (value) => {
@@ -126,6 +174,7 @@ angular.module('app', []).component('app', {
     const barchart = new BarChart();
     const barchartToday = new BarChartToday();
     const dailyDistribution = new DailyDistribution();
+    const dailyDistributionToday = new DailyDistribution();
 
     const happinessapp = new HappinessApp();
 
@@ -148,7 +197,15 @@ angular.module('app', []).component('app', {
         clear: () => this.clearAllSelections(),
         hasSelected: $scope.dataSelected,
       });
-      this.painted = true;
+    }
+
+    // TODO: Code duplication
+    const paintDailyToday = (layout) => {
+      dailyDistributionToday.paintChart(document.getElementById('daily-container-today'), layout, {
+        select,
+        clear: () => this.clearAllSelections(),
+        hasSelected: $scope.dataSelected,
+      });
     }
 
     this.generateGUID = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -192,11 +249,23 @@ angular.module('app', []).component('app', {
               lineChartModel = model;
 
               const update = () => lineChartModel.getLayout().then((layout) => {
-                console.log(layout);
                 paintDaily(layout);   
               });
 
               lineChartModel.on('changed', update);
+              update();
+            })       
+          // TODO: Code duplication
+          .then(() => app.createSessionObject(dayDistributionTodayChartProperties))
+            .then((model) => {
+              lineChartModel2 = model;
+              
+              const update = () => lineChartModel2.getLayout().then((layout) => {
+                console.log(layout);
+                paintDailyToday(layout);   
+              });
+
+              lineChartModel2.on('changed', update);
               update();
             })       
         });        
