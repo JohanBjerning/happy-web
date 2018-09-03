@@ -34,7 +34,7 @@ export default class DailyDistribution {
                 value: v => v.qNum,
                 props: {
                   happiness: { field: 'Happiness'},
-                  happinessCount: { field: 'Respondents' }
+                  happinessCount: { field: 'Respondents' },
               }
             }
           }
