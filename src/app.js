@@ -179,29 +179,15 @@ angular.module('app', []).component('app', {
     const happinessapp = new HappinessApp();
 
     const paintChart = (layout) => {
-      barchart.paintBarChart(document.getElementById('chart-container'), layout, {
-        select,
-        clear: () => this.clearAllSelections(),
-        hasSelected: $scope.dataSelected,
-      });
-      barchartToday.paintBarChart(document.getElementById('chart-container2'), layout, {
+      barchartToday.paintBarChart(document.getElementById('daily-totals-bar'), layout, {
         select,
         clear: () => this.clearAllSelections(),
         hasSelected: $scope.dataSelected,
       });
     };
 
-    const paintDaily = (layout) => {
-      dailyDistribution.paintChart(document.getElementById('daily-container'), layout, {
-        select,
-        clear: () => this.clearAllSelections(),
-        hasSelected: $scope.dataSelected,
-      });
-    }
-
-    // TODO: Code duplication
     const paintDailyToday = (layout) => {
-      dailyDistributionToday.paintChart(document.getElementById('daily-container-today'), layout, {
+      dailyDistributionToday.paintChart(document.getElementById('daily-totals-line'), layout, {
         select,
         clear: () => this.clearAllSelections(),
         hasSelected: $scope.dataSelected,
@@ -244,17 +230,6 @@ angular.module('app', []).component('app', {
               barChartModel.on('changed', update);
               update();
             })
-          .then(() => app.createSessionObject(dayDistributionChartProperties))
-            .then((model) => {
-              lineChartModel = model;
-
-              const update = () => lineChartModel.getLayout().then((layout) => {
-                paintDaily(layout);   
-              });
-
-              lineChartModel.on('changed', update);
-              update();
-            })       
           // TODO: Code duplication
           .then(() => app.createSessionObject(dayDistributionTodayChartProperties))
             .then((model) => {

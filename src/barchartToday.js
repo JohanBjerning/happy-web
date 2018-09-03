@@ -66,7 +66,7 @@ export default class BarChartToday {
         scale: 'y',
         settings: {
           labels: {
-            fontSize: '16px',
+            fontSize: '18px',
             fill: 'black',
             fontFamily: 'quicksand-regular',
           }

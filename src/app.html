@@ -1,20 +1,12 @@
 <div class="content" ng-click="$ctrl.clearAllSelections()">
     <div class="grid-container" ng-if="$ctrl.connected">
         <div class="grid-item">
-            <div class="title">Today's happiness</div>
-            <div id="chart-container2" class="picasso-chart"></div>
+            <div class="title">How did we like it?</div>
+            <div id="daily-totals-bar" class="picasso-chart"></div>
         </div>
         <div class="grid-item">
-            <div class="title">Today's distribution</div>
-            <div id="daily-container-today" class="picasso-chart"></div>
-        </div>
-        <div class="grid-item">
-            <div class="title">All time happiness result</div>
-            <div id="chart-container" class="picasso-chart"></div>
-        </div>
-        <div class="grid-item">
-            <div class="title">All time distribution</div>
-            <div id="daily-container" class="picasso-chart"></div>
+            <div class="title">When did you like it?</div>
+            <div id="daily-totals-line" class="picasso-chart"></div>
         </div>
         <div class="grid-item" id="emojis">
             <table width="100%">
@@ -29,9 +21,9 @@
 </div>
 
 <div class="menu" ng-if="$ctrl.admin">
-        <button type="button" ng-click="$ctrl.reloadData()">Reload App</button><br>
-        <button type="button" ng-click="$ctrl.createNewApp()">Create App</button><br>
-        <button type="button" ng-click="$ctrl.reloadEveryXSewc()">Start reloads</button><br>
+        <button type="button" ng-click="$ctrl.reloadData()">Reload App</button>
+        <button type="button" ng-click="$ctrl.createNewApp()">Create App</button>
+        <button type="button" ng-click="$ctrl.reloadEveryXSewc()">Start reloads</button>
     </div>
 
 

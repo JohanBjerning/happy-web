@@ -55,7 +55,7 @@ export default class DailyDistribution {
         scale: 'y',
         settings: {
           labels: {
-            fontSize: '10px',
+            fontSize: '18px',
             fill: 'black',
             fontFamily: 'quicksand-regular',
           }
@@ -66,7 +66,7 @@ export default class DailyDistribution {
         scale: 'x',
         settings: {
           labels: {
-            fontSize: '10px',
+            fontSize: '14px',
             fontFamily: 'quicksand-regular',
             fill: 'black'
           }
