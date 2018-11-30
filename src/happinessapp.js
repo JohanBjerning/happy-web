@@ -4,6 +4,7 @@
 import enigma from 'enigma.js';
 import {configuration} from './config'
 import qixSchema from 'enigma.js/schemas/3.2.json';
+import { SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG } from 'constants';
 
 const mysqlConnectionSettings = {
     qType: 'jdbc', // the name we defined as a parameter to engine in our docker-compose.yml
@@ -14,6 +15,8 @@ const mysqlConnectionSettings = {
   };
 
   const script = `
+    SET DateFormat='YYYY-MM-DD';
+
     lib connect to 'jdbc';
     happy:
     LOAD
@@ -25,26 +28,82 @@ const mysqlConnectionSettings = {
 
 
 export default class HappinessApp {
-    doReload(appId, config) {        
-        let app = null;
-        let global = null;
-        let session = null;
+    
+    constructor(){
+        this.app = null;
+        this.global = null; 
+        this.session = null;
+    }
 
-        session = enigma.create(config);
+    /**
+     * Setup enigmas session
+     * @param {*} appId 
+     * @param {*} config 
+     */
+    setupSession(appId, config) {
+        this.session = enigma.create(config);
         /* Open Connection to Engine */
-        session.open()
+        return this.session.open()
         .then((result) => {
-            global = result;
+            this.global = result;
         })
         /* Open Document */
-        .then(() => global.openDoc(appId))
+        .then(() => this.global.openDoc(appId))
         .then((result) => {
-            app = result;
+            this.app = result;
         })
-        .then(() => global.abortAll())
+        .catch((error) => {
+            console.log('Session: Failed to setup session:', error);            
+        });
+    }
+
+    /**
+     * Reload and save application
+     */
+    doReload() {        
+        return this.app.doReload()
+        .then(() => this.app.doSave())
+        .catch((error) => {
+            console.log('Session: Failed to reload app:', error);           
+        });
+    }
+
+    /**
+     * Return promise of last happiness entry
+     */
+    getLastEntry() {
+        return this.app.evaluate('max(HappinessDate)')
+        .catch((error) => {
+            console.log('Session: Failed to get last happiness entry:', error);           
+        });
+    }
+
+    /** 
+     * Close Enigma sessinon
+    */
+    closeSession() {
+        return this.session.close()
+        .catch((error) => {
+            console.log('Session: Failed to close session:', error);           
+        });
+    }
+
+    /**
+     * Crate happiness app in engine
+     * @param {*} appId 
+     * @param {*} config 
+     */
+    createNewApp(appId, config) {
+        const session = enigma.create(config);
+        session.open()
+        .then((result) => {
+            this.global = result;
+        })
+        .then(() => this.global.createApp(appId))
+        .then(() => this.global.abortAll())
 
         /* Create Connection */
-        .then(() => app.getConnections())
+        .then(() => this.app.getConnections())
         .then((connections) => {
             if(connections) {
                 for (var j=0; j<connections.length; j++) {
@@ -52,51 +111,15 @@ export default class HappinessApp {
                     return connections[j].qId;
                 }                
             }
-            return app.createConnection(mysqlConnectionSettings);
+            return this.app.createConnection(mysqlConnectionSettings);
         })
 
         /* Configure the Reload */
-        .then(() => global.configureReload(true, false, false))
+        .then(() => this.global.configureReload(true, false, false))
 
         /* Set the Script */
-        .then(() => app.setScript(script))
+        .then(() => this.app.setScript(script))
 
-        /* Do the Reload*/
-        .then(() => app.doReload())
-
-        // /* Get the table data and log it */
-        // .then(() => app.getTableData(-1, 10000, true, 'happy'))
-        // .then((tableData) => {
-        //     const tableDataAsString = tableData
-        //       .map(row =>
-        //         row.qValue
-        //           .map(value => value.qText)
-        //           .reduce((left, right) => `${left}\t${right}`),
-        //     )
-        //     .reduce((row1, row2) => `${row1}\n${row2}`);
-        //     console.log(tableDataAsString);
-        // })
-
-        /* Save the app */
-        .then(() => app.doSave())
-
-        /* Close the session */
-        .then(() => session.close())
-        .catch((error) => {
-            console.log('Session: Failed to reload app:', error);           
-        });
-    }
-
-    createNewApp(appId, config) {
-        const session = enigma.create(config);
-        session.open()
-        .then((result) => {
-            global = result;
-        })
-        .then(() => global.createApp(appId))
-        .then(() => session.close())
-        .catch((error) => {
-            console.log('Session: Failed to create app:', error);            
-        });
+        .then(() => this.session.close()) 
     }
 }

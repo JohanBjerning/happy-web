@@ -2,10 +2,10 @@ version: "2"
 
 services:
   engine:
-    image: qlikcore/engine:12.193.0
+    image: qlikcore/engine:12.277.0
     restart: always
     command: -S AcceptEULA=${ACCEPT_EULA}
     ports:
-      - "19076:9076"
+      - "29076:9076"
     volumes: 
       - ./data:/data

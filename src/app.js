@@ -261,7 +261,6 @@ angular.module('app', []).component('app', {
               lineChartModel2 = model;
               
               const update = () => lineChartModel2.getLayout().then((layout) => {
-                console.log(layout);
                 paintDailyToday(layout);   
               });
 
@@ -276,9 +275,16 @@ angular.module('app', []).component('app', {
       };
 
       this.reloadData = () => {
-        happinessapp.doReload(appId, config);
+        let happinessapp = new HappinessApp();
+        happinessapp.setupSession(appId, config)
+        .then(() => happinessapp.doReload())
+        .then(() => happinessapp.getLastEntry())
+        .then((date) => {
+          document.getElementById('latest').innerHTML = date;  
+        })
+        .then(() => happinessapp.close)
       };
-      
+
       this.reloadEveryXSewc = () => {
         setInterval(this.reloadData, 10000);          
       };
