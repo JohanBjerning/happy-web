@@ -275,14 +275,13 @@ angular.module('app', []).component('app', {
       };
 
       this.reloadData = () => {
-        let happinessapp = new HappinessApp();
         happinessapp.setupSession(appId, config)
         .then(() => happinessapp.doReload())
         .then(() => happinessapp.getLastEntry())
         .then((date) => {
           document.getElementById('latest').innerHTML = date;  
         })
-        .then(() => happinessapp.close)
+        .then(() => happinessapp.closeSession())
       };
 
       this.reloadEveryXSewc = () => {

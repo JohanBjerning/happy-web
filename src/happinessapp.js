@@ -4,7 +4,6 @@
 import enigma from 'enigma.js';
 import {configuration} from './config'
 import qixSchema from 'enigma.js/schemas/3.2.json';
-import { SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG } from 'constants';
 
 const mysqlConnectionSettings = {
     qType: 'jdbc', // the name we defined as a parameter to engine in our docker-compose.yml
