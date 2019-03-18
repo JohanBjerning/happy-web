@@ -225,6 +225,38 @@ angular.module('app', []).component('app', {
 
       const appId = configuration.appName;
 
+      var connection = new WebSocket('ws://' + configuration.happyServer);
+
+      connection.onopen = function () {
+        // connection is opened and ready to use
+      };
+    
+      connection.onerror = function (error) {
+        // an error occurred when sending/receiving data
+      };
+    
+      connection.onmessage = function (message) {
+        // try to decode json (I assume that each message
+        // from server is json)
+        var mood;
+        try {
+          var json = JSON.parse(message.data);
+          mood = json.data.button;
+        } catch (e) {
+          console.log('This doesn\'t look like a valid JSON: ',
+              message.data);
+          return;
+        }
+        document.getElementById('mood-pushed').style.backgroundImage = "url(resources/"+mood+"Icon.png)";
+        document.getElementById('mood-pushed').style.display = 'inline';
+        function removeIt() {
+          document.getElementById('mood-pushed').style.display = 'none';
+        }
+        setTimeout(removeIt, 2000);
+
+        // handle incoming message
+      };
+
       enigma.create(config).open().then((global) => {
         this.connected = true;
         this.connecting = false;
@@ -232,42 +264,45 @@ angular.module('app', []).component('app', {
         global.openDoc(appId)
         .then((result) => {
           app = result;
-          app.getAppLayout()
-          .then(() => app.createSessionObject(barchartProperties))
-            .then((model) => {
-              barChartModel = model;
+          app.evaluate('max(HappinessDate)')
+          .then((date) => {
+            document.getElementById('latest').innerHTML = date;
+            app.getAppLayout()
+            .then(() => app.createSessionObject(barchartProperties))
+              .then((model) => {
+                barChartModel = model;
 
-              const update = () => barChartModel.getLayout().then((layout) => {
-                paintChart(layout);   
-              });
+                const update = () => barChartModel.getLayout().then((layout) => {
+                  paintChart(layout);   
+                });
 
-              barChartModel.on('changed', update);
-              update();
-            })
-          .then(() => app.createSessionObject(dayDistributionChartProperties))
-            .then((model) => {
-              lineChartModel = model;
+                barChartModel.on('changed', update);
+                update();
+              })
+            .then(() => app.createSessionObject(dayDistributionChartProperties))
+              .then((model) => {
+                lineChartModel = model;
 
-              const update = () => lineChartModel.getLayout().then((layout) => {
-                paintDaily(layout);   
-              });
+                const update = () => lineChartModel.getLayout().then((layout) => {
+                  paintDaily(layout);   
+                });
 
-              lineChartModel.on('changed', update);
-              update();
-            })       
-          // TODO: Code duplication
-          .then(() => app.createSessionObject(dayDistributionTodayChartProperties))
-            .then((model) => {
-              lineChartModel2 = model;
-              
-              const update = () => lineChartModel2.getLayout().then((layout) => {
-                console.log(layout);
-                paintDailyToday(layout);   
-              });
+                lineChartModel.on('changed', update);
+                update();
+              })       
+            // TODO: Code duplication
+            .then(() => app.createSessionObject(dayDistributionTodayChartProperties))
+              .then((model) => {
+                lineChartModel2 = model;
+                
+                const update = () => lineChartModel2.getLayout().then((layout) => {
+                  paintDailyToday(layout);   
+                });
 
-              lineChartModel2.on('changed', update);
-              update();
-            })       
+                lineChartModel2.on('changed', update);
+                update();
+              })  
+            })     
         });        
       });           
 
@@ -276,9 +311,16 @@ angular.module('app', []).component('app', {
       };
 
       this.reloadData = () => {
-        happinessapp.doReload(appId, config);
+        let happinessapp = new HappinessApp();
+        happinessapp.setupSession(appId, config)
+        .then(() => happinessapp.doReload())
+        .then(() => happinessapp.getLastEntry())
+        .then((date) => {
+          document.getElementById('latest').innerHTML = date;  
+        })
+        .then(() => happinessapp.close)
       };
-      
+
       this.reloadEveryXSewc = () => {
         setInterval(this.reloadData, 10000);          
       };

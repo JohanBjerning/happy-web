@@ -1,16 +1,9 @@
 <div class="content" ng-click="$ctrl.clearAllSelections()">
     <div class="grid-container" ng-if="$ctrl.connected">
         <div class="grid-item">
-            <div class="title">Today's happiness</div>
+            <div class="title">Today's happiness </div>
+            <div class="title"><small><span id="latest">1970-01-01 12:00</span></small></div>
             <div id="chart-container2" class="picasso-chart"></div>
-        </div>
-        <div class="grid-item">
-            <div class="title">Today's distribution</div>
-            <div id="daily-container-today" class="picasso-chart"></div>
-        </div>
-        <div class="grid-item">
-            <div class="title">All time happiness result</div>
-            <div id="chart-container" class="picasso-chart"></div>
         </div>
         <div class="grid-item">
             <div class="title">All time distribution</div>
@@ -28,11 +21,22 @@
     </div>
 </div>
 
-<div class="menu" ng-if="$ctrl.admin">
-        <button type="button" ng-click="$ctrl.reloadData()">Reload App</button><br>
-        <button type="button" ng-click="$ctrl.createNewApp()">Create App</button><br>
-        <button type="button" ng-click="$ctrl.reloadEveryXSewc()">Start reloads</button><br>
-    </div>
+<div id="mood-pushed">
+</div>
+
+<style>
+.grid-item2 {
+    display: none;
+}
+</style>
+<div class="grid-item2">
+    <div class="title">Today's distribution</div>
+    <div id="daily-container-today" class="picasso-chart"></div>
+</div>
+<div class="grid-item2">
+    <div class="title">All time happiness result</div>
+    <div id="chart-container" class="picasso-chart"></div>
+</div>
 
 
 <div class="error" ng-if="!$ctrl.connected && !$ctrl.connecting">

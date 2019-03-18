@@ -38,6 +38,32 @@ app {
 	height: 100%;
 }
 
+#mood-pushed {
+	display: none;
+	position: absolute;
+	width: 400px;
+	height: 400px;
+	background-image: url("resources/sadIcon.png");
+	background-size: cover;
+	top: calc(50% - 200px);
+	left: calc(50%  - 200px);
+	-webkit-animation: fadein 1s; /* Safari, Chrome and Opera > 12.1 */
+	-moz-animation: fadein 1s; /* Firefox < 16 */
+	 -ms-animation: fadein 1s; /* Internet Explorer */
+		-o-animation: fadein 1s; /* Opera < 12.1 */
+			 animation: fadein 1s;
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes fadein {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes fadeout {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
 
 
 .title {
@@ -51,12 +77,12 @@ app {
 	position: relative;
 }
 #chart-container2 {
-	min-height: 340px;
+	min-height: 25vh;
 	margin-top: 40px;
 	position: relative;
 }
 #daily-container {
-	min-height: 340px;
+	min-height: 25vh;
 	margin-top: 40px;
 	position: relative;
 }
@@ -118,7 +144,7 @@ app {
 }
 
 .grid-container {
-	display: grid;
+	display: block;
 	grid-template-columns: auto auto ;
 	grid-gap: 20px;
 	margin: auto;
@@ -135,6 +161,7 @@ app {
 	border: 1px solid rgba(0, 0, 0, 0.3);
 	background-color: rgba(255, 255, 255, 0.6);
 	padding: 20px;
+	margin-bottom: 15px;
 	font-size: 30px;
 	min-width: 50%;
 	border-radius: 11px;

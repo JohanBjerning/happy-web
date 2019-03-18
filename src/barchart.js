@@ -31,11 +31,6 @@ export default class BarChart {
           data: {
             extract: {
               field: 'qDimensionInfo/0',
-              props: {
-                movie: { value: v => v.qText },
-                cost: { field: 'qMeasureInfo/0' },
-                rating: { field: 'qMeasureInfo/0' },
-              },
             },
           },
         },
