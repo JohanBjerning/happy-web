@@ -3,10 +3,8 @@ import angular from 'angular';
 import enigma from 'enigma.js';
 import qixSchema from 'enigma.js/schemas/3.2.json';
 import template from './app.html';
-import BarChart from './barchart';
 import BarChartToday from './barchartToday';
 import DailyDistribution from './dailydistribution';
-import HappinessApp from './happinessapp';
 import {configuration} from './config';
 
 
@@ -88,58 +86,10 @@ const dayDistributionChartProperties = {
     qMeasures: [
       {
         qDef: {
-          qDef: 'Count([Happiness])',
+          qDef: 'Count({1<[HappinessDate]={">$(=Date(Today(1) - 7))"}>}[Happiness])',
           qLabel: 'Respondents',
         }
       },
-    ],
-    qInitialDataFetch: [{
-      qTop: 0, qHeight: 1000, qLeft: 0, qWidth: 3,
-    }],
-    qMode: 'S', 
-    qInterColumnSortOrder: [0,2,1],
-    qSuppressZero: false,
-    qSuppressMissing: true,
-  },
-};
-
-const dayDistributionTodayChartProperties = {
-  qInfo: {
-    qType: 'visualization',
-    qId: '',
-  },
-  type: 'my-picasso-multilinechart',
-  labels: true,
-  qHyperCubeDef: {
-    qDimensions: [
-      {
-        qDef: {
-          qFieldDefs: ['Hour'],
-          qSortCriterias: [
-            {
-              qSortByNumeric: 1 // Sort ascending
-            }
-          ]
-        }
-      }
-      ,{
-        qDef: {
-          qFieldDefs: ['Happiness'],
-          qSortCriterias: [
-            {
-              qSortByNumeric: 1 // Sort ascending
-            }
-          ]
-        }
-      }
-    ],
-    qMeasures: [
-      {
-        qDef: {
-          qDef: 'Count({1<[HappinessDate]={">$(=Date(Today(1)))"}>}[Happiness])',
-          qLabel: 'Respondents',
-        }
-      }
     ],
     qInitialDataFetch: [{
       qTop: 0, qHeight: 1000, qLeft: 0, qWidth: 3,
@@ -171,37 +121,19 @@ angular.module('app', []).component('app', {
 
     };
 
-    const barchart = new BarChart();
     const barchartToday = new BarChartToday();
     const dailyDistribution = new DailyDistribution();
-    const dailyDistributionToday = new DailyDistribution();
 
-    const happinessapp = new HappinessApp();
-
-    const paintChart = (layout) => {
-      barchart.paintBarChart(document.getElementById('chart-container'), layout, {
-        select,
-        clear: () => this.clearAllSelections(),
-        hasSelected: $scope.dataSelected,
-      });
-      barchartToday.paintBarChart(document.getElementById('chart-container2'), layout, {
+    const paintHappiness = (layout) => {
+      barchartToday.paintBarChart(document.getElementById('happiness-container'), layout, {
         select,
         clear: () => this.clearAllSelections(),
         hasSelected: $scope.dataSelected,
       });
     };
 
-    const paintDaily = (layout) => {
-      dailyDistribution.paintChart(document.getElementById('daily-container'), layout, {
-        select,
-        clear: () => this.clearAllSelections(),
-        hasSelected: $scope.dataSelected,
-      });
-    }
-
-    // TODO: Code duplication
-    const paintDailyToday = (layout) => {
-      dailyDistributionToday.paintChart(document.getElementById('daily-container-today'), layout, {
+    const paintDistribution = (layout) => {
+      dailyDistribution.paintChart(document.getElementById('distribution-container'), layout, {
         select,
         clear: () => this.clearAllSelections(),
         hasSelected: $scope.dataSelected,
@@ -273,7 +205,7 @@ angular.module('app', []).component('app', {
                 barChartModel = model;
 
                 const update = () => barChartModel.getLayout().then((layout) => {
-                  paintChart(layout);   
+                  paintHappiness(layout);   
                 });
 
                 barChartModel.on('changed', update);
@@ -284,46 +216,15 @@ angular.module('app', []).component('app', {
                 lineChartModel = model;
 
                 const update = () => lineChartModel.getLayout().then((layout) => {
-                  paintDaily(layout);   
+                  paintDistribution(layout);   
                 });
 
                 lineChartModel.on('changed', update);
                 update();
               })       
-            // TODO: Code duplication
-            .then(() => app.createSessionObject(dayDistributionTodayChartProperties))
-              .then((model) => {
-                lineChartModel2 = model;
-                
-                const update = () => lineChartModel2.getLayout().then((layout) => {
-                  paintDailyToday(layout);   
-                });
-
-                lineChartModel2.on('changed', update);
-                update();
-              })  
             })     
         });        
       });           
-
-      this.createNewApp = () => {
-        happinessapp.createNewApp(appId, config);
-      };
-
-      this.reloadData = () => {
-        let happinessapp = new HappinessApp();
-        happinessapp.setupSession(appId, config)
-        .then(() => happinessapp.doReload())
-        .then(() => happinessapp.getLastEntry())
-        .then((date) => {
-          document.getElementById('latest').innerHTML = date;  
-        })
-        .then(() => happinessapp.close)
-      };
-
-      this.reloadEveryXSewc = () => {
-        setInterval(this.reloadData, 10000);          
-      };
     }
   }],
   template,

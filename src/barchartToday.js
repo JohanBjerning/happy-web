@@ -24,21 +24,6 @@ export default class BarChartToday {
       return; // keep selected chart state
     }
     const settings = {
-      collections: [
-        {
-          key: 'coll',
-          data: {
-            extract: {
-              field: 'qDimensionInfo/0',
-              props: {
-                movie: { value: v => v.qText },
-                cost: { field: 'qMeasureInfo/0' },
-                rating: { field: 'qMeasureInfo/0' },
-              },
-            },
-          },
-        },
-      ],
       scales: {
         y: {
           data: { field: 'qMeasureInfo/1' },
@@ -67,7 +52,7 @@ export default class BarChartToday {
         settings: {
           labels: {
             fontSize: '16px',
-            fill: 'black',
+            fill: 'white',
             fontFamily: 'quicksand-regular',
           }
         }
@@ -79,7 +64,7 @@ export default class BarChartToday {
           labels: {
             fontSize: '0px',
             fontFamily: 'quicksand-regular',
-            fill: 'black'
+            fill: 'white'
           }
         }
       },{

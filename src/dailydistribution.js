@@ -41,7 +41,7 @@ export default class DailyDistribution {
         },
       ],
       scales: {
-        x: { data: { field: 'Hour' }, type: 'linear', ticks: {distance:60} },
+        x: { data: { field: 'Hour' }, type: 'linear' },
         y: { data: { field: 'Respondents' }, expand: 0.1, invert: true },
         happinessScale: {
           type: 'categorical-color',
@@ -56,7 +56,7 @@ export default class DailyDistribution {
         settings: {
           labels: {
             fontSize: '14px',
-            fill: 'black',
+            fill: 'white',
             fontFamily: 'quicksand-regular',
           }
         }
@@ -68,7 +68,7 @@ export default class DailyDistribution {
           labels: {
             fontSize: '14px',
             fontFamily: 'quicksand-regular',
-            fill: 'black'
+            fill: 'white'
           }
         }
       },{
@@ -83,7 +83,7 @@ export default class DailyDistribution {
           },
           layers: {
             line: {
-              strokeWidth:8,
+              strokeWidth: 4,
               // Use the happiness as input for how to colour the lines
               stroke: function(d){return d.resources.scale('happinessScale')(d.datum.happiness.label); }              
             },

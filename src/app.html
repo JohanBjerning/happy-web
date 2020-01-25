@@ -1,43 +1,25 @@
 <div class="content" ng-click="$ctrl.clearAllSelections()">
     <div class="grid-container" ng-if="$ctrl.connected">
-        <div class="grid-item">
+        <div class="grid-item grid-item-top">
             <div class="title">Today's happiness </div>
             <div class="title"><small><span id="latest">1970-01-01 12:00</span></small></div>
-            <div id="chart-container2" class="picasso-chart"></div>
-        </div>
-        <div class="grid-item">
-            <div class="title">All time distribution</div>
-            <div id="daily-container" class="picasso-chart"></div>
+            <div id="happiness-container" class="picasso-chart"></div>
         </div>
         <div class="grid-item" id="emojis">
             <table width="100%">
                 <tr>
-                    <td><img src="resources/happyIcon.png" width="100px"></td>
+                    <td style="padding-left: 50px"><img src="resources/happyIcon.png" width="100px"></td>
                     <td><img src="resources/contentIcon.png" width="100px"></td>
-                    <td><img src="resources/sadIcon.png" width="100px"></td>
+                    <td style="padding-right: 30px"><img src="resources/sadIcon.png" width="100px"></td>
                 </tr>
             </table>
         </div>
+        <div class="grid-item grid-item-bottom">
+            <div class="title">Distribution last 7 days</div>
+            <div id="distribution-container" class="picasso-chart"></div>
+        </div>        
     </div>
 </div>
-
-<div id="mood-pushed">
-</div>
-
-<style>
-.grid-item2 {
-    display: none;
-}
-</style>
-<div class="grid-item2">
-    <div class="title">Today's distribution</div>
-    <div id="daily-container-today" class="picasso-chart"></div>
-</div>
-<div class="grid-item2">
-    <div class="title">All time happiness result</div>
-    <div id="chart-container" class="picasso-chart"></div>
-</div>
-
 
 <div class="error" ng-if="!$ctrl.connected && !$ctrl.connecting">
     <div class="error-wrapper">

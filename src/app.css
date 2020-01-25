@@ -19,13 +19,12 @@ html, body {
 }
 
 body {
-	background-image: URL(resources/happy.jpg);
+	background-image: URL('https://images.unsplash.com/photo-1534413298607-48ba59e8a06d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2550&q=80');
 	height: 100%; 
-
-    /* Center and scale the image nicely */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+	/* Center and scale the image nicely */
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
 	font-family: quicksand-regular;
 	font-size: 14px;
 	color: #fff;
@@ -69,26 +68,17 @@ app {
 .title {
 	font-size: 22px;
 	padding-bottom: 10px;
+	color: #fff;
 }
 
-#chart-container {
-	height: 340px;
-	margin-top: 40px;
-	position: relative;
-}
-#chart-container2 {
-	min-height: 25vh;
-	margin-top: 40px;
-	position: relative;
-}
-#daily-container {
+#happiness-container {
 	min-height: 25vh;
 	margin-top: 40px;
 	position: relative;
 }
 
-#daily-container-today {
-	min-height: 340px;
+#distribution-container {
+	min-height: 25vh;
 	margin-top: 40px;
 	position: relative;
 }
@@ -158,16 +148,24 @@ app {
 	padding-bottom: 20px;
 }
 .grid-item {
-	border: 1px solid rgba(0, 0, 0, 0.3);
-	background-color: rgba(255, 255, 255, 0.6);
+	background-color: rgba(9, 117, 23, 0.3);
 	padding: 20px;
 	margin-bottom: 15px;
+	margin-top: 15px;
 	font-size: 30px;
 	min-width: 50%;
-	border-radius: 11px;
 	box-sizing: border-box;
 	text-align: center;
 }
+
+.grid-item-top {
+	border-radius: 11px 11px 0 0;
+}
+
+.grid-item-bottom {
+	border-radius: 0 0 11px 11px;
+}
+
 .menu {
 	position: absolute;
 	bottom: 0;
